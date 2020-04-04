@@ -1,12 +1,6 @@
-
-//https://stackoverflow.com/questions/11127543/how-to-move-an-object-forward-in-three-js
-
-//let playerAngle = 0;
 let pressed = {};
 let clock = new THREE.Clock();
-
-
-
+let map = null;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
 const camera = 
@@ -16,6 +10,8 @@ new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+
 
 window.addEventListener('resize', function(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -224,25 +220,87 @@ plane1.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( plane1 );
 
 //grid helper
+/*
 var axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 var gridHelper = new THREE.GridHelper( 100, 100 );
 gridHelper.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( gridHelper );
 
+
 scene.add( new THREE.AxesHelper() );
 
+*/
+
 const animate = function () {
-	requestAnimationFrame( animate );
+
+  setTimeout( function() { //30 fps
+    requestAnimationFrame( animate );
+  }, 1000 / 30 );
 
 	camera.position.z = 5;
 	renderer.render( scene, camera );
 	movePlayer();
 };
 
+loadTrackTextures();
 animate();
 addListeners();
 
+function convertJsonTilesToMap(x, y){
+  //json map is represented as the coordinates on left below. 
+  //have to convert it to the coordinate system on the right. 
+  //(0,0)   (100,0)     maps to    (-50,50)  (50,50)
+  //(0,100) (100,100)              (-50,-50) (50,-50)
+  return [x - 50, y - 50];
+  
+}
+
+function drawTiles(){
+  //starting from 0,0 on the map is equivalent to -50, 50. use converter
+  //(0,0)   (100,0)     maps to    (-50,50)  (50,50)
+  //(0,100) (100,100)              (-50,-50) (50,-50)
+  const boundaryTexture = new THREE.TextureLoader().load('level/boundary.jpg');
+  const grassTexture = new THREE.TextureLoader().load('level/grass.jpg');
+  const trackTexture = new THREE.TextureLoader().load('level/track.jpg');
+  
+  
+  for (var i = 0; i < 100; i++){
+    for (var j = 0; j < 100; j++){
+      let geometry = new THREE.PlaneGeometry(1, 1);
+      let material = new THREE.MeshBasicMaterial({map: grassTexture});
+      const tileType = map[i][j];
+      if (tileType == 1){
+        material = new THREE.MeshBasicMaterial({map: boundaryTexture}); 
+      } else if (tileType == 3){
+        material = new THREE.MeshBasicMaterial({map: trackTexture});
+      }
+      let plane = new THREE.Mesh( geometry, material );
+      plane.position.x = j - 50;
+      plane.position.y = i - 50;
+      scene.add( plane );
+    }
+  }
+}
+
+
+
+function loadTrackTextures(){
+  const httpRequest = new XMLHttpRequest();
+    httpRequest.overrideMimeType("application/json");
+    httpRequest.open("GET", "/level/level.json", true);
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState === 4 && httpRequest.status == "200") {
+          //console.log(rawFile);
+          const result = JSON.parse(httpRequest.response).map;
+          if (result != null){
+            map = result;
+            drawTiles();
+          }
+        }
+    }
+    httpRequest.send();
+}
 
 //records pressed keys
 function addListeners() {
@@ -261,8 +319,6 @@ function movePlayer() {
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
-	  //player.rotateOnAxis(new THREE.Vector3(1,0,0), -rotateAngle)
-	  //console.log(player.position.x + ", " + player.position.y);
       player.translateZ( -1 * moveDistance );
     }
     if ( pressed['S'] ) 
@@ -281,36 +337,3 @@ function movePlayer() {
   }
 
 
-/*
-document.onkeydown = checkKey;
-
-
-
-
-
-function checkKey(e) {
-
-    e = e || window.event;
-
-    if (e.keyCode == '38') {
-		// up arrow
-		//player.translateX(1);
-		player.translateZ(-1);
-		console.log(player.position.x, ", " + player.position.y);
-	}
-    else if (e.keyCode == '40') {
-		// down arrow
-		player.position.y -= 1;
-		player.translateZ(1);
-    }
-    else if (e.keyCode == '37') {
-	   // left arrow
-	   player.rotation.y -= 0.1;
-    }
-    else if (e.keyCode == '39') {
-	   // right arrow
-	   player.rotation.y += 0.1;
-    }
-
-}
-*/
