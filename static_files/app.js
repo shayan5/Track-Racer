@@ -260,7 +260,7 @@ function drawTiles(){
   //starting from 0,0 on the map is equivalent to -50, 50. use converter
   //(0,0)   (100,0)     maps to    (-50,50)  (50,50)
   //(0,100) (100,100)              (-50,-50) (50,-50)
-  const boundaryTexture = new THREE.TextureLoader().load('level/boundary.jpg');
+  const boundaryTexture = new THREE.TextureLoader().load('level/boundary.png');
   const grassTexture = new THREE.TextureLoader().load('level/grass.jpg');
   const trackTexture = new THREE.TextureLoader().load('level/track.jpg');
   
