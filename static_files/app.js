@@ -5,8 +5,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
 const camera = 
 new THREE.PerspectiveCamera( 
-  30, window.innerWidth/window.innerHeight, 0.1, 1000 );
-camera.position.set(0, 1.25, 0);
+  30, window.innerWidth/window.innerHeight, 0.1, 500 );
+camera.position.set(0, 0.5, 0);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -21,14 +21,14 @@ window.addEventListener('resize', function(){
 });
 
 //player
-const geometry = new THREE.PlaneGeometry(1, 1);
+const geometry = new THREE.PlaneGeometry(0.5, 0.5);
 const material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 const player = new THREE.Mesh( geometry, material );
 player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 player.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
 player.position.x = 0; 
 player.position.y = 0;
-player.position.z = 0.5;
+player.position.z = 0.25;
 player.add(camera); //camera will follow player
 scene.add( player );
 
