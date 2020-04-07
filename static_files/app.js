@@ -5,8 +5,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
 const camera = 
 new THREE.PerspectiveCamera( 
-	45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-//camera.position.z = 5;
+  30, window.innerWidth/window.innerHeight, 0.1, 1000 );
+camera.position.set(0, 1.25, 0);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -31,15 +31,6 @@ player.position.y = 0;
 player.position.z = 0.5;
 player.add(camera); //camera will follow player
 scene.add( player );
-
-
-/*
-//ground
-const groundGeometry = new THREE.PlaneGeometry(100, 100);
-const groundMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00, side: THREE.DoubleSide} );
-const ground = new THREE.Mesh(groundGeometry, groundMaterial)
-scene.add(ground);
-*/
 
 
 //load map textures
@@ -219,17 +210,14 @@ plane1.position.z = 5;
 plane1.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( plane1 );
 
-//grid helper
 /*
+//grid helper
 var axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 var gridHelper = new THREE.GridHelper( 100, 100 );
 gridHelper.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( gridHelper );
-
-
 scene.add( new THREE.AxesHelper() );
-
 */
 
 const animate = function () {
@@ -257,9 +245,6 @@ function convertJsonTilesToMap(x, y){
 }
 
 function drawTiles(){
-  //starting from 0,0 on the map is equivalent to -50, 50. use converter
-  //(0,0)   (100,0)     maps to    (-50,50)  (50,50)
-  //(0,100) (100,100)              (-50,-50) (50,-50)
   const boundaryTexture = new THREE.TextureLoader().load('level/boundary.png');
   const grassTexture = new THREE.TextureLoader().load('level/grass.jpg');
   const trackTexture = new THREE.TextureLoader().load('level/track.jpg');
@@ -291,7 +276,6 @@ function loadTrackTextures(){
     httpRequest.open("GET", "/level/level.json", true);
     httpRequest.onreadystatechange = function() {
         if (httpRequest.readyState === 4 && httpRequest.status == "200") {
-          //console.log(rawFile);
           const result = JSON.parse(httpRequest.response).map;
           if (result != null){
             map = result;
