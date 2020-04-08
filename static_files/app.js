@@ -22,7 +22,11 @@ window.addEventListener('resize', function(){
 
 //player
 const geometry = new THREE.PlaneGeometry(0.5, 0.5);
-const material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+let playerTexture = new THREE.TextureLoader().load('player/racer.png');
+playerTexture.offset.x = 0.2;
+playerTexture.repeat.set(0.2, 1);
+const material = new THREE.MeshBasicMaterial( { map: playerTexture } );
+material.transparent = true;
 const player = new THREE.Mesh( geometry, material );
 player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 player.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
@@ -31,7 +35,6 @@ player.position.y = 0;
 player.position.z = 0.25;
 player.add(camera); //camera will follow player
 scene.add( player );
-
 
 //load map textures
 //northern skybox
@@ -299,25 +302,26 @@ function addListeners() {
 function movePlayer() {
     var delta = clock.getDelta(); // interval 1/60th of a second
     var moveDistance = 10 * delta; // 10 pixels per second
-    var rotateAngle = Math.PI * delta; // pi radians (180 deg) per interval
+    var rotateAngle = Math.PI / 2 * delta; // pi radians (180 deg) per interval
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
       player.translateZ( -1 * moveDistance );
+      playerTexture.offset.x = 0.2;
     }
-    if ( pressed['S'] ) 
+    if ( pressed['S'] ) {
       player.translateZ(  moveDistance );
-    if ( pressed['A'] )
-      player.translateX( -1 * moveDistance );
-    if ( pressed['D'] )
-	  player.translateX(  moveDistance ); 
-	  
-	var rotation_matrix = new THREE.Matrix4().identity();
-    if ( pressed['A'] )
+    }
+    
+    var rotation_matrix = new THREE.Matrix4().identity();
+    if ( pressed['A'] ) {
       player.rotateOnAxis(new THREE.Vector3(0,1,0), rotateAngle);
-    if ( pressed['D'] )
+      playerTexture.offset.x = 0;
+    }
+    if ( pressed['D'] ) {
       player.rotateOnAxis(new THREE.Vector3(0,1,0), -rotateAngle);
-
-  }
+      playerTexture.offset.x = 0.4;
+    }
+}
 
 
