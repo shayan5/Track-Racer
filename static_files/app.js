@@ -1,12 +1,15 @@
 let pressed = {};
 let clock = new THREE.Clock();
 let map = null;
+let player = null;
+let playerTexture = null;
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
-const camera = 
-new THREE.PerspectiveCamera( 
-  30, window.innerWidth/window.innerHeight, 0.1, 500 );
-camera.position.set(0, 0.5, 0);
+const camera = new THREE.PerspectiveCamera( 
+    30, window.innerWidth/window.innerHeight, 0.1, 500
+  );
+camera.position.set(0, 1.25, 0);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -21,20 +24,22 @@ window.addEventListener('resize', function(){
 });
 
 //player
-const geometry = new THREE.PlaneGeometry(0.5, 0.5);
-let playerTexture = new THREE.TextureLoader().load('player/racer.png');
-playerTexture.offset.x = 0.2;
-playerTexture.repeat.set(0.2, 1);
-const material = new THREE.MeshBasicMaterial( { map: playerTexture } );
-material.transparent = true;
-const player = new THREE.Mesh( geometry, material );
-player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-player.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
-player.position.x = 0; 
-player.position.y = 0;
-player.position.z = 0.25;
-player.add(camera); //camera will follow player
-scene.add( player );
+function initializePlayer(x, y){
+  const geometry = new THREE.PlaneGeometry(0.75, 0.75);
+  playerTexture = new THREE.TextureLoader().load('player/racer.png');
+  playerTexture.offset.x = 0.2;
+  playerTexture.repeat.set(0.2, 1);
+  const material = new THREE.MeshBasicMaterial( { map: playerTexture } );
+  material.transparent = true;
+  player = new THREE.Mesh( geometry, material );
+  player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+  player.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
+  player.position.x = x; 
+  player.position.y = y;
+  player.position.z = 0.375;
+  player.add(camera); //camera will follow player
+  scene.add(player);
+}
 
 //load map textures
 //northern skybox
@@ -213,23 +218,13 @@ plane1.position.z = 5;
 plane1.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( plane1 );
 
-/*
-//grid helper
-var axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
-var gridHelper = new THREE.GridHelper( 100, 100 );
-gridHelper.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-scene.add( gridHelper );
-scene.add( new THREE.AxesHelper() );
-*/
-
 const animate = function () {
 
   setTimeout( function() { //30 fps
     requestAnimationFrame( animate );
   }, 1000 / 30 );
 
-	camera.position.z = 5;
+	camera.position.z = 8;
 	renderer.render( scene, camera );
 	movePlayer();
 };
@@ -244,7 +239,10 @@ function convertJsonTilesToMap(x, y){
   //(0,0)   (100,0)     maps to    (-50,50)  (50,50)
   //(0,100) (100,100)              (-50,-50) (50,-50)
   return [x - 50, y - 50];
-  
+}
+
+function convertMapToJsonTiles(x, y){
+  return [x + 50, y + 50];
 }
 
 function drawTiles(){
@@ -262,6 +260,9 @@ function drawTiles(){
         material = new THREE.MeshBasicMaterial({map: boundaryTexture}); 
       } else if (tileType == 3){
         material = new THREE.MeshBasicMaterial({map: trackTexture});
+      } else if (tileType == 7){
+        let playerCoordinates = convertJsonTilesToMap(j, i);
+        initializePlayer(playerCoordinates[0], playerCoordinates[1]);
       }
       let plane = new THREE.Mesh( geometry, material );
       plane.position.x = j - 50;
@@ -299,6 +300,23 @@ function addListeners() {
     })
 }
 
+function getTile(x, y){
+  let location = convertMapToJsonTiles(Math.floor(x), Math.floor(y));
+  return map[location[1]][location[0]]; //map array stores y then x
+}
+
+function canMove(moveDistance){
+  let playerPosition = new THREE.Vector3();
+  player.getWorldPosition(playerPosition);
+  playerPosition.add(new THREE.Vector3(0, 0, moveDistance));
+  //console.log(playerPosition.x + ", " + playerPosition.y);
+  let tileType = getTile(playerPosition.x, playerPosition.y);
+  if (tileType == 1){
+    return false;
+  }
+  return true;
+}
+
 function movePlayer() {
     var delta = clock.getDelta(); // interval 1/60th of a second
     var moveDistance = 10 * delta; // 10 pixels per second
@@ -306,11 +324,17 @@ function movePlayer() {
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
-      player.translateZ( -1 * moveDistance );
+      if (canMove(-1 * moveDistance)){
+        player.translateZ( -1 * moveDistance );
+      } else {
+        player.translateZ(moveDistance + 0.5); //player gets pushed back if they hit boundary
+      } 
       playerTexture.offset.x = 0.2;
     }
     if ( pressed['S'] ) {
-      player.translateZ(  moveDistance );
+      if (canMove(moveDistance)){
+        player.translateZ(moveDistance);
+      }  
     }
     
     var rotation_matrix = new THREE.Matrix4().identity();
