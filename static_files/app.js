@@ -3,6 +3,8 @@ let clock = new THREE.Clock();
 let map = null;
 let player = null;
 let playerTexture = null;
+const maxSpeed = 20;
+let playerSpeed = 0;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
@@ -319,17 +321,25 @@ function canMove(moveDistance){
 
 function movePlayer() {
     var delta = clock.getDelta(); // interval 1/60th of a second
-    var moveDistance = 10 * delta; // 10 pixels per second
+    var moveDistance = playerSpeed * delta; // 10 pixels per second
     var rotateAngle = Math.PI / 2 * delta; // pi radians (180 deg) per interval
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
       if (canMove(-1 * moveDistance)){
         player.translateZ( -1 * moveDistance );
+        if (playerSpeed < maxSpeed){
+          playerSpeed += 2;
+        }
       } else {
         player.translateZ(moveDistance + 0.5); //player gets pushed back if they hit boundary
+        playerSpeed = 0;
       } 
       playerTexture.offset.x = 0.2;
+    } else {
+      if (playerSpeed > 0){
+        playerSpeed -= 2;
+      }
     }
     if ( pressed['S'] ) {
       if (canMove(moveDistance)){
