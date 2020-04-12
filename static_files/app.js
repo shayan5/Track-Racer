@@ -1,3 +1,4 @@
+const fps = 30;
 let pressed = {};
 let clock = new THREE.Clock();
 let map = null;
@@ -5,6 +6,8 @@ let player = null;
 let playerTexture = null;
 const maxSpeed = 20;
 let playerSpeed = 0;
+const playerAcceleration = 2 / fps;
+const playerDeceleration = -4 * playerAcceleration;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
@@ -220,11 +223,13 @@ plane1.position.z = 5;
 plane1.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 scene.add( plane1 );
 
+
+//****************** RENDER FRAMES ********************
 const animate = function () {
 
   setTimeout( function() { //30 fps
     requestAnimationFrame( animate );
-  }, 1000 / 30 );
+  }, 1000 / fps );
 
 	camera.position.z = 8;
 	renderer.render( scene, camera );
@@ -319,6 +324,19 @@ function canMove(moveDistance){
   return true;
 }
 
+function moveForward(moveDistance){
+  if (canMove(-1 * moveDistance)){
+    player.translateZ( -1 * moveDistance );
+    if (playerSpeed < maxSpeed){
+      playerSpeed += playerAcceleration;
+    }
+  } else {
+    player.translateZ(moveDistance + 0.5); //player gets pushed back if they hit boundary
+    playerSpeed = 0;
+  } 
+  playerTexture.offset.x = 0.2;
+}
+
 function movePlayer() {
     var delta = clock.getDelta(); // interval 1/60th of a second
     var moveDistance = playerSpeed * delta; // 10 pixels per second
@@ -326,19 +344,11 @@ function movePlayer() {
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
-      if (canMove(-1 * moveDistance)){
-        player.translateZ( -1 * moveDistance );
-        if (playerSpeed < maxSpeed){
-          playerSpeed += 2;
-        }
-      } else {
-        player.translateZ(moveDistance + 0.5); //player gets pushed back if they hit boundary
-        playerSpeed = 0;
-      } 
-      playerTexture.offset.x = 0.2;
+      moveForward(moveDistance);
     } else {
       if (playerSpeed > 0){
-        playerSpeed -= 2;
+        playerSpeed += playerDeceleration;
+        moveForward(moveDistance);
       }
     }
     if ( pressed['S'] ) {
