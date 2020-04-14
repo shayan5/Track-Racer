@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Level Editor</title>
+<link rel="stylesheet" type="text/css" href="editorstyle.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="canvaseditor.js"></script>
+</head>
+
+<body>
+    <img id="boundary" width="40" height="40" src="level/boundary.png">
+    <img id="grass" width="40" height="40" src="level/grass.jpg">
+    <img id="track" width="40" height="40" src="level/track.jpg">
+    <button type="button" onclick="setColour(1)">Boundary</button>
+    <button type="button" onclick="setColour(2)">Grass</button>
+    <button type="button" onclick="setColour(3)">Track</button>
+    <button type="button" onclick="setColour(5)">Speed Boost</button>
+    <button type="button" onclick="setColour(6)">Check Point</button>
+    <button id='recordButton' type="button" onclick="toggleRecord()">Click to draw</button>
+    <button type="button" onclick="saveLevel()">download level</button>
+    <div id="map">
+        <canvas id="canvasMap" width="1000" height="1000" style="border:1px solid #000000;"></canvas>
+    </div>
+</body>
+
+</html>
