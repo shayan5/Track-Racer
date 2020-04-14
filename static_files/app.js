@@ -1,13 +1,16 @@
-const fps = 30;
+const fps = 60;
 let pressed = {};
 let clock = new THREE.Clock();
 let map = null;
 let player = null;
 let playerTexture = null;
-const maxSpeed = 20;
+const maxSpeedOnTrack = 15;
+const maxSpeedOnGrass = 5;
+const boostSpeed = 20;
 let playerSpeed = 0;
-const playerAcceleration = 2 / fps;
+const playerAcceleration = 5 / fps;
 const playerDeceleration = -4 * playerAcceleration;
+let boosts = 3;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xab6a8c);
@@ -32,6 +35,9 @@ window.addEventListener('resize', function(){
 function initializePlayer(x, y){
   const geometry = new THREE.PlaneGeometry(0.75, 0.75);
   playerTexture = new THREE.TextureLoader().load('player/racer.png');
+  playerTexture.generateMipmaps = false;
+  playerTexture.minFilter = THREE.NearestFilter;
+  playerTexture.magFilter = THREE.NearestFilter;
   playerTexture.offset.x = 0.2;
   playerTexture.repeat.set(0.2, 1);
   const material = new THREE.MeshBasicMaterial( { map: playerTexture } );
@@ -49,6 +55,9 @@ function initializePlayer(x, y){
 //load map textures
 //northern skybox
 let bgTexture = new THREE.TextureLoader().load('level/bg1.png');
+bgTexture.generateMipmaps = false;
+bgTexture.minFilter = THREE.NearestFilter;
+bgTexture.magFilter = THREE.NearestFilter;
 let bgMaterial = new THREE.MeshBasicMaterial({map: bgTexture});
 let bgPlane = new THREE.PlaneGeometry(500, 130);
 const northernBgMesh = new THREE.Mesh(bgPlane, bgMaterial);
@@ -60,6 +69,9 @@ scene.add(northernBgMesh);
 
 //northern mountains
 let mtTexture = new THREE.TextureLoader().load('level/mountain2.png');
+mtTexture.generateMipmaps = false;
+mtTexture.minFilter = THREE.NearestFilter;
+mtTexture.magFilter = THREE.NearestFilter;
 mtTexture.wrapS = THREE.RepeatWrapping;
 mtTexture.repeat.x = 2;
 let mtMaterial = new THREE.MeshBasicMaterial({map: mtTexture});
@@ -74,6 +86,9 @@ scene.add(northernMtMesh);
 
 //northern trees
 let trTexture = new THREE.TextureLoader().load('level/trees1.png');
+trTexture.generateMipmaps = false;
+trTexture.minFilter = THREE.NearestFilter;
+trTexture.magFilter = THREE.NearestFilter;
 trTexture.wrapS = THREE.RepeatWrapping;
 trTexture.repeat.x = 3;
 let trMaterial = new THREE.MeshBasicMaterial({map: trTexture});
@@ -89,6 +104,9 @@ scene.add(northernTrMesh);
 
 //southern skybox
 bgTexture = new THREE.TextureLoader().load('level/bg2.png');
+bgTexture.generateMipmaps = false;
+bgTexture.minFilter = THREE.NearestFilter;
+bgTexture.magFilter = THREE.NearestFilter;
 bgMaterial = new THREE.MeshBasicMaterial({map: bgTexture});
 bgPlane = new THREE.PlaneGeometry(500, 130);
 const southernBgMesh = new THREE.Mesh(bgPlane, bgMaterial);
@@ -101,6 +119,9 @@ scene.add(southernBgMesh);
 
 //southern mountains
 mtTexture = new THREE.TextureLoader().load('level/mountain2.png');
+mtTexture.generateMipmaps = false;
+mtTexture.minFilter = THREE.NearestFilter;
+mtTexture.magFilter = THREE.NearestFilter;
 mtTexture.wrapS = THREE.RepeatWrapping;
 mtTexture.repeat.x = 2;
 mtMaterial = new THREE.MeshBasicMaterial({map: mtTexture});
@@ -116,6 +137,9 @@ scene.add(southernMtMesh);
 
 //southern trees
 trTexture = new THREE.TextureLoader().load('level/trees1.png');
+trTexture.generateMipmaps = false;
+trTexture.minFilter = THREE.NearestFilter;
+trTexture.magFilter = THREE.NearestFilter;
 trTexture.wrapS = THREE.RepeatWrapping;
 trTexture.repeat.x = 3;
 trMaterial = new THREE.MeshBasicMaterial({map: trTexture});
@@ -131,6 +155,9 @@ scene.add(southernTrMesh);
 
 //eastern skybox
 bgTexture = new THREE.TextureLoader().load('level/bg2.png');
+bgTexture.generateMipmaps = false;
+bgTexture.minFilter = THREE.NearestFilter;
+bgTexture.magFilter = THREE.NearestFilter;
 bgMaterial = new THREE.MeshBasicMaterial({map: bgTexture});
 bgPlane = new THREE.PlaneGeometry(500, 130);
 const easternBgMesh = new THREE.Mesh(bgPlane, bgMaterial);
@@ -143,6 +170,9 @@ scene.add(easternBgMesh);
 
 //eastern mountains
 mtTexture = new THREE.TextureLoader().load('level/mountain2.png');
+mtTexture.generateMipmaps = false;
+mtTexture.minFilter = THREE.NearestFilter;
+mtTexture.magFilter = THREE.NearestFilter;
 mtTexture.wrapS = THREE.RepeatWrapping;
 mtTexture.repeat.x = 2;
 mtMaterial = new THREE.MeshBasicMaterial({map: mtTexture});
@@ -158,6 +188,9 @@ scene.add(easternMtMesh);
 
 //eastern trees
 trTexture = new THREE.TextureLoader().load('level/trees1.png');
+trTexture.generateMipmaps = false;
+trTexture.minFilter = THREE.NearestFilter;
+trTexture.magFilter = THREE.NearestFilter;
 trTexture.wrapS = THREE.RepeatWrapping;
 trTexture.repeat.x = 3;
 trMaterial = new THREE.MeshBasicMaterial({map: trTexture});
@@ -173,6 +206,9 @@ scene.add(easternTrMesh);
 
 //western skybox
 bgTexture = new THREE.TextureLoader().load('level/bg2.png');
+bgTexture.generateMipmaps = false;
+bgTexture.minFilter = THREE.NearestFilter;
+bgTexture.magFilter = THREE.NearestFilter;
 bgMaterial = new THREE.MeshBasicMaterial({map: bgTexture});
 bgPlane = new THREE.PlaneGeometry(500, 130);
 const westernBgMesh = new THREE.Mesh(bgPlane, bgMaterial);
@@ -185,6 +221,9 @@ scene.add(westernBgMesh);
 
 //western mountains
 mtTexture = new THREE.TextureLoader().load('level/mountain2.png');
+mtTexture.generateMipmaps = false;
+mtTexture.minFilter = THREE.NearestFilter;
+mtTexture.magFilter = THREE.NearestFilter;
 mtTexture.wrapS = THREE.RepeatWrapping;
 mtTexture.repeat.x = 2;
 mtMaterial = new THREE.MeshBasicMaterial({map: mtTexture});
@@ -200,6 +239,9 @@ scene.add(westernMtMesh);
 
 //western trees
 trTexture = new THREE.TextureLoader().load('level/trees1.png');
+trTexture.generateMipmaps = false;
+trTexture.minFilter = THREE.NearestFilter;
+trTexture.magFilter = THREE.NearestFilter;
 trTexture.wrapS = THREE.RepeatWrapping;
 trTexture.repeat.x = 3;
 trMaterial = new THREE.MeshBasicMaterial({map: trTexture});
@@ -254,8 +296,17 @@ function convertMapToJsonTiles(x, y){
 
 function drawTiles(){
   const boundaryTexture = new THREE.TextureLoader().load('level/boundary.png');
+  boundaryTexture.generateMipmaps = false;
+  boundaryTexture.minFilter = THREE.NearestFilter;
+  boundaryTexture.magFilter = THREE.NearestFilter;
   const grassTexture = new THREE.TextureLoader().load('level/grass.jpg');
+  grassTexture.generateMipmaps = false;
+  grassTexture.minFilter = THREE.NearestFilter;
+  grassTexture.magFilter = THREE.NearestFilter;
   const trackTexture = new THREE.TextureLoader().load('level/track.jpg');
+  trackTexture.generateMipmaps = false;
+  trackTexture.minFilter = THREE.NearestFilter;
+  trackTexture.magFilter = THREE.NearestFilter;
   
   
   for (var i = 0; i < 100; i++){
@@ -320,6 +371,14 @@ function canMove(moveDistance){
   let tileType = getTile(playerPosition.x, playerPosition.y);
   if (tileType == 1){
     return false;
+  } else if (tileType == 2){
+    if (playerSpeed > maxSpeedOnGrass){
+      playerSpeed += 2 * playerDeceleration;
+    }
+  } else if (tileType == 5){
+    boosts += 1;
+    playerSpeed = boostSpeed;
+    console.log(boosts);
   }
   return true;
 }
@@ -327,7 +386,7 @@ function canMove(moveDistance){
 function moveForward(moveDistance){
   if (canMove(-1 * moveDistance)){
     player.translateZ( -1 * moveDistance );
-    if (playerSpeed < maxSpeed){
+    if (playerSpeed < maxSpeedOnTrack){
       playerSpeed += playerAcceleration;
     }
   } else {
@@ -340,7 +399,7 @@ function moveForward(moveDistance){
 function movePlayer() {
     var delta = clock.getDelta(); // interval 1/60th of a second
     var moveDistance = playerSpeed * delta; // 10 pixels per second
-    var rotateAngle = Math.PI / 2 * delta; // pi radians (180 deg) per interval
+    var rotateAngle = Math.PI  * delta; // pi radians (180 deg) per interval
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
@@ -365,6 +424,15 @@ function movePlayer() {
     if ( pressed['D'] ) {
       player.rotateOnAxis(new THREE.Vector3(0,1,0), -rotateAngle);
       playerTexture.offset.x = 0.4;
+    }
+
+    if (pressed[' ']){ //spacebar
+      console.log(boosts);
+      if (boosts > 0){
+        playerSpeed = boostSpeed;
+        boosts -= 1;
+      }
+      pressed[' '] = false;
     }
 }
 
