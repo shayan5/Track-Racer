@@ -13,6 +13,7 @@ const playerDeceleration = -3 * playerAcceleration;
 let boosts = 3;
 
 const scene = new THREE.Scene();
+scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
 scene.background = new THREE.Color(0xab6a8c);
 const camera = new THREE.PerspectiveCamera( 
     30, window.innerWidth/window.innerHeight, 0.1, 500
@@ -43,8 +44,7 @@ function initializePlayer(x, y){
   const material = new THREE.MeshBasicMaterial( { map: playerTexture } );
   material.transparent = true;
   player = new THREE.Mesh( geometry, material );
-  player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-  player.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
+  player.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2 );
   player.position.x = x; 
   player.position.y = y;
   player.position.z = 0.375;
@@ -295,16 +295,17 @@ function convertMapToJsonTiles(x, y){
 }
 
 function drawTiles(){
-  const boundaryTexture = new THREE.TextureLoader().load('map.png');
+  
+  const boundaryTexture = new THREE.TextureLoader().load('level/level.png');
   boundaryTexture.generateMipmaps = false;
   boundaryTexture.minFilter = THREE.NearestFilter;
   boundaryTexture.magFilter = THREE.NearestFilter;
   let geometry = new THREE.PlaneGeometry(100, 100);
   let material = new THREE.MeshBasicMaterial({map: boundaryTexture});
   let plane = new THREE.Mesh( geometry, material );
-  //let playerCoordinates = convertJsonTilesToMap(j, i);
-        initializePlayer(15, 15);
+  initializePlayer(-41, 4);
   scene.add( plane );
+  
   /*
   const boundaryTexture = new THREE.TextureLoader().load('level/boundary.png');
   boundaryTexture.generateMipmaps = false;
@@ -381,6 +382,7 @@ function canMove(moveDistance){
   playerPosition.add(new THREE.Vector3(0, 0, moveDistance));
   //console.log(playerPosition.x + ", " + playerPosition.y);
   let tileType = getTile(playerPosition.x, playerPosition.y);
+  console.log(tileType);
   if (tileType == 1){
     return false;
   } else if (tileType == 2){
