@@ -4,9 +4,9 @@ let clock = new THREE.Clock();
 let map = null;
 let player = null;
 let playerTexture = null;
-const maxSpeedOnTrack = 12;
+const maxSpeedOnTrack = 15;
 const maxSpeedOnGrass = 4;
-const boostSpeed = 15;
+const boostSpeed = 25;
 let playerSpeed = 0;
 const playerAcceleration = 6 / fps;
 const playerDeceleration = -3 * playerAcceleration;
@@ -303,7 +303,7 @@ function drawTiles(){
   let geometry = new THREE.PlaneGeometry(100, 100);
   let material = new THREE.MeshBasicMaterial({map: boundaryTexture});
   let plane = new THREE.Mesh( geometry, material );
-  initializePlayer(-41, 4);
+  initializePlayer(-41, 4); //TODO remove hardcoded value
   scene.add( plane );
   
   /*
@@ -382,7 +382,7 @@ function canMove(moveDistance){
   playerPosition.add(new THREE.Vector3(0, 0, moveDistance));
   //console.log(playerPosition.x + ", " + playerPosition.y);
   let tileType = getTile(playerPosition.x, playerPosition.y);
-  console.log(tileType);
+  //console.log(tileType);
   if (tileType == 1){
     return false;
   } else if (tileType == 2){
@@ -402,6 +402,8 @@ function moveForward(moveDistance){
     player.translateZ( -1 * moveDistance );
     if (playerSpeed < maxSpeedOnTrack){
       playerSpeed += playerAcceleration;
+    } else if (playerSpeed > maxSpeedOnTrack){
+      playerSpeed -= playerAcceleration;
     }
   } else {
     player.translateZ(moveDistance + 0.5); //player gets pushed back if they hit boundary
