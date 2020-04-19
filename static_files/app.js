@@ -4,13 +4,13 @@ let clock = new THREE.Clock();
 let map = null;
 let player = null;
 let playerTexture = null;
+let time = 0;
 const maxSpeedOnTrack = 15;
 const maxSpeedOnGrass = 4;
 const boostSpeed = 25;
 let playerSpeed = 0;
 const playerAcceleration = 6 / fps;
 const playerDeceleration = -3 * playerAcceleration;
-let boosts = 3;
 
 const scene = new THREE.Scene();
 scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
@@ -268,19 +268,24 @@ scene.add( plane1 );
 
 //****************** RENDER FRAMES ********************
 const animate = function () {
-
-  setTimeout( function() { //30 fps
+  setTimeout( function() {
     requestAnimationFrame( animate );
   }, 1000 / fps );
 
 	camera.position.z = 8;
 	renderer.render( scene, camera );
-	movePlayer();
+  movePlayer();
+  updateTimer();
 };
 
 loadTrackTextures();
 animate();
 addListeners();
+
+function updateTimer(){
+  time += 1;
+  document.getElementById("info").innerHTML = time;
+}
 
 function convertJsonTilesToMap(x, y){
   //json map is represented as the coordinates on left below. 
@@ -295,7 +300,6 @@ function convertMapToJsonTiles(x, y){
 }
 
 function drawTiles(){
-  
   const boundaryTexture = new THREE.TextureLoader().load('level/level.png');
   boundaryTexture.generateMipmaps = false;
   boundaryTexture.minFilter = THREE.NearestFilter;
@@ -305,42 +309,6 @@ function drawTiles(){
   let plane = new THREE.Mesh( geometry, material );
   initializePlayer(-41, 4); //TODO remove hardcoded value
   scene.add( plane );
-  
-  /*
-  const boundaryTexture = new THREE.TextureLoader().load('level/boundary.png');
-  boundaryTexture.generateMipmaps = false;
-  boundaryTexture.minFilter = THREE.NearestFilter;
-  boundaryTexture.magFilter = THREE.NearestFilter;
-  const grassTexture = new THREE.TextureLoader().load('level/grass.jpg');
-  grassTexture.generateMipmaps = false;
-  grassTexture.minFilter = THREE.NearestFilter;
-  grassTexture.magFilter = THREE.NearestFilter;
-  const trackTexture = new THREE.TextureLoader().load('level/track.jpg');
-  trackTexture.generateMipmaps = false;
-  trackTexture.minFilter = THREE.NearestFilter;
-  trackTexture.magFilter = THREE.NearestFilter;
-  
-  
-  for (var i = 0; i < 100; i++){
-    for (var j = 0; j < 100; j++){
-      let geometry = new THREE.PlaneGeometry(1, 1);
-      let material = new THREE.MeshBasicMaterial({map: grassTexture});
-      const tileType = map[i][j];
-      if (tileType == 1){
-        material = new THREE.MeshBasicMaterial({map: boundaryTexture}); 
-      } else if (tileType == 3){
-        material = new THREE.MeshBasicMaterial({map: trackTexture});
-      } else if (tileType == 7){
-        let playerCoordinates = convertJsonTilesToMap(j, i);
-        initializePlayer(playerCoordinates[0], playerCoordinates[1]);
-      }
-      let plane = new THREE.Mesh( geometry, material );
-      plane.position.x = j - 50;
-      plane.position.y = i - 50;
-      scene.add( plane );
-    }
-  }
-  */
 }
 
 
@@ -390,9 +358,7 @@ function canMove(moveDistance){
       playerSpeed = maxSpeedOnGrass;
     }
   } else if (tileType == 5){
-    boosts += 1;
     playerSpeed = boostSpeed;
-    console.log(boosts);
   }
   return true;
 }
@@ -402,7 +368,7 @@ function moveForward(moveDistance){
     player.translateZ( -1 * moveDistance );
     if (playerSpeed < maxSpeedOnTrack){
       playerSpeed += playerAcceleration;
-    } else if (playerSpeed > maxSpeedOnTrack){
+    } else if (playerSpeed > maxSpeedOnTrack){ //decelerate from speed boost
       playerSpeed -= playerAcceleration;
     }
   } else {
@@ -442,14 +408,6 @@ function movePlayer() {
       playerTexture.offset.x = 0.4;
     }
 
-    if (pressed[' ']){ //spacebar
-      console.log(boosts);
-      if (boosts > 0){
-        playerSpeed = boostSpeed;
-        boosts -= 1;
-      }
-      pressed[' '] = false;
-    }
 }
 
 
