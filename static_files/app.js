@@ -4,13 +4,17 @@ let clock = new THREE.Clock();
 let map = null;
 let player = null;
 let playerTexture = null;
-let time = 0;
+let currentTime = 0;
+let bestTime = 0;
+let checkpointPassed = true;
 const maxSpeedOnTrack = 15;
 const maxSpeedOnGrass = 4;
 const boostSpeed = 25;
 let playerSpeed = 0;
 const playerAcceleration = 6 / fps;
 const playerDeceleration = -3 * playerAcceleration;
+let timerElement = document.getElementById("info");
+let raceStarted = false;
 
 const scene = new THREE.Scene();
 scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
@@ -283,8 +287,12 @@ animate();
 addListeners();
 
 function updateTimer(){
-  time += 1;
-  document.getElementById("info").innerHTML = time;
+  if (raceStarted){
+    currentTime += 1;
+    if (currentTime % 10 == 0) { //only update every 10 frames for performance
+      timerElement.innerHTML = "Time: " + (currentTime / fps).toFixed(2) + " Best: " + (bestTime / fps).toFixed(2);
+    }
+  }
 }
 
 function convertJsonTilesToMap(x, y){
@@ -359,8 +367,23 @@ function canMove(moveDistance){
     }
   } else if (tileType == 5){
     playerSpeed = boostSpeed;
+  } else if (tileType == 6){
+    checkpointPassed = true;
+  } else if (tileType == 4){
+    raceStarted = true;
+    newLap();
   }
   return true;
+}
+
+function newLap(){
+  if (checkpointPassed){
+    if (bestTime == 0 || currentTime < bestTime){
+      bestTime = currentTime;
+    }
+    currentTime = 0;
+    checkpointPassed = false;
+  }
 }
 
 function moveForward(moveDistance){
@@ -379,9 +402,9 @@ function moveForward(moveDistance){
 }
 
 function movePlayer() {
-    var delta = clock.getDelta(); // interval 1/60th of a second
-    var moveDistance = playerSpeed * delta; // 10 pixels per second
-    var rotateAngle = Math.PI  * delta; // pi radians (180 deg) per interval
+    let delta = clock.getDelta(); // interval 1/60th of a second
+    let moveDistance = playerSpeed * delta; // 10 pixels per second
+    let rotateAngle = Math.PI  * delta; // pi radians (180 deg) per interval
 
     // move forwards/backwards/left/right
     if ( pressed['W'] ) {
