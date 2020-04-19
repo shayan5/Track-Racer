@@ -259,15 +259,17 @@ westernTrMesh.position.y = 0;
 westernTrMesh.position.z = 10;
 scene.add(westernTrMesh);
 
-
-//northern wall
-const wallGeometry = new THREE.PlaneGeometry( 5, 10 );
-const wallMaterial = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
-const plane1 = new THREE.Mesh( wallGeometry, wallMaterial );
-plane1.position.y = 50;
-plane1.position.z = 5;
-plane1.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
-scene.add( plane1 );
+//ground outside race track
+let grTexture = new THREE.TextureLoader().load('level/grass.jpg');
+grTexture.generateMipmaps = false;
+grTexture.minFilter = THREE.NearestFilter;
+grTexture.magFilter = THREE.NearestFilter;
+grTexture.wrapS = THREE.RepeatWrapping;
+let grMaterial = new THREE.MeshBasicMaterial({map: grTexture});
+let grPlane = new THREE.PlaneGeometry(500, 500);
+const grMesh = new THREE.Mesh(grPlane, grMaterial);
+grMesh.position.z = -0.1; 
+scene.add(grMesh);
 
 
 //****************** RENDER FRAMES ********************
