@@ -16,6 +16,7 @@ const boostSpeed = 25;
 let map = null;
 
 let currentTime = 0;
+let lastTime = 0;
 let bestTime = 0;
 
 let checkpointPassed = true;
@@ -91,7 +92,6 @@ function movePlayer() {
       }  
     }
     
-    var rotation_matrix = new THREE.Matrix4().identity();
     if ( pressed['A'] ) {
       player.rotateOnAxis(new THREE.Vector3(0,1,0), rotateAngle);
       playerTexture.offset.x = 0;
@@ -132,6 +132,7 @@ function canMove(moveDistance){
       if (bestTime == 0 || currentTime < bestTime){
         bestTime = currentTime;
       }
+      lastTime = currentTime;
       currentTime = 0;
       checkpointPassed = false;
     }
