@@ -2,16 +2,28 @@
 <html>
 <head>
 <title>Page Title</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://threejs.org/build/three.min.js"></script>
 <script type="text/javascript" src="background.js"></script>
 
-<script type="module" src="app.js"></script>
-<script type="text/javascript" src="movement.js"></script>
+<script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="game.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 </head>
 <body>
-    <div id="info">Time: 0.00 Last: 0.00 Best: 0.00</div>
+    <div id="mainMenu">
+        <button onclick="playGame()">Click here to play!</button>
+        <button onclick="createLevel()">Click here to make your own level!</button>
+    </div>
+
+    <div id="game">
+        <canvas id="gameCanvas"></canvas>
+        <div id="info">Time: 0.00 Last: 0.00 Best: 0.00</div>
+    </div>
+
+    <div id="editor"></div>
+    
 </body>
 </html>

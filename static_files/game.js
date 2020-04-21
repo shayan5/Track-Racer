@@ -154,3 +154,14 @@ function canMove(moveDistance){
   function convertMapToJsonTiles(x, y){
     return [x + 50, y + 50];
   }
+
+  function updateTimer(){
+    if (raceStarted){
+      currentTime += 1;
+      if (currentTime % 10 == 0) { //only update every 10 frames for performance
+        timerElement.innerHTML = "Time: " + (currentTime / fps).toFixed(2) 
+        + " Last: " + (lastTime / fps).toFixed(2)
+        + " Best: " + (bestTime / fps).toFixed(2);
+      }
+    }
+  }

@@ -1,51 +1,48 @@
-const timerElement = document.getElementById("info");
+let timerElement = null;
+let scene = null;
+let camera = null;
+let renderer = null;
 
-const scene = new THREE.Scene();
-scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
-scene.background = new THREE.Color(0xab6a8c);
-const camera = new THREE.PerspectiveCamera( 
+function initializeGame(){
+  timerElement = document.getElementById("info");
+  scene = new THREE.Scene();
+  scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
+  scene.background = new THREE.Color(0xab6a8c);
+  camera = new THREE.PerspectiveCamera( 
     30, window.innerWidth/window.innerHeight, 0.1, 500
   );
-camera.position.set(0, 1.25, 0);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-
-
+  camera.position.set(0, 1.25, 0);
+  let canvas = document.getElementById("gameCanvas");
+  renderer = new THREE.WebGLRenderer({canvas: canvas});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  loadBackground(scene);
+  loadTrackTextures();
+  animate();
+  addListeners();
+}
 
 window.addEventListener('resize', function(){
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	camera.aspect = window.innerWidth / window.innerHeight;
-
 	camera.updateProjectionMatrix();
 });
 
 const animate = function () {
-  setTimeout( function() {
-    requestAnimationFrame( animate );
+  setTimeout(function() {
+    requestAnimationFrame(animate);
   }, 1000 / fps );
 
 	camera.position.z = 8;
-	renderer.render( scene, camera );
+	renderer.render(scene, camera);
   movePlayer();
   updateTimer();
 };
-loadBackground(scene);
-loadTrackTextures();
-animate();
-addListeners();
 
-function updateTimer(){
-  if (raceStarted){
-    currentTime += 1;
-    if (currentTime % 10 == 0) { //only update every 10 frames for performance
-      timerElement.innerHTML = "Time: " + (currentTime / fps).toFixed(2) 
-      + " Last: " + (lastTime / fps).toFixed(2)
-      + " Best: " + (bestTime / fps).toFixed(2);
-    }
-  }
+function playGame(){
+  $("#mainMenu").hide();
+  $("#game").show();
+  initializeGame();
 }
-
 
 
 function drawTiles(){
@@ -55,9 +52,9 @@ function drawTiles(){
   boundaryTexture.magFilter = THREE.NearestFilter;
   let geometry = new THREE.PlaneGeometry(100, 100);
   let material = new THREE.MeshBasicMaterial({map: boundaryTexture});
-  let plane = new THREE.Mesh( geometry, material );
+  let plane = new THREE.Mesh(geometry, material);
   initializePlayer(-41, 4, camera, scene); //TODO remove hardcoded value
-  scene.add( plane );
+  scene.add(plane);
 }
 
 
