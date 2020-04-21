@@ -8,14 +8,15 @@
 
 <script type="text/javascript" src="app.js"></script>
 <script type="text/javascript" src="game.js"></script>
+<script src="canvaseditor.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
 </head>
 <body>
     <div id="mainMenu">
-        <button onclick="playGame()">Click here to play!</button>
-        <button onclick="createLevel()">Click here to make your own level!</button>
+        <button onclick="selectGame()">Click here to play!</button>
+        <button onclick="selectLevelEditor()">Click here to make your own level!</button>
     </div>
 
     <div id="game">
@@ -23,7 +24,24 @@
         <div id="info">Time: 0.00 Last: 0.00 Best: 0.00</div>
     </div>
 
-    <div id="editor"></div>
+    <div id="editor">
+        <img id="boundary" width="40" height="40" src="level/boundary.png">
+        <img id="grass" width="40" height="40" src="level/grass.jpg">
+        <img id="track" width="40" height="40" src="level/track.jpg">
+        <img id="startline" width="40" height="40" src="level/startline.jpg">
+        <img id="boost" width="40" height="40" src="level/boost.jpg">
+        <img id="checkpoint" width="40" height="40" src="level/checkpoint.jpg">
+        <img id="player" width="40" height="40" src="level/player.jpg">
+        <button type="button" onclick="setColour(1)">Boundary</button>
+        <button type="button" onclick="setColour(2)">Grass</button>
+        <button type="button" onclick="setColour(3)">Track</button>
+        <button type="button" onclick="setColour(5)">Speed Boost</button>
+        <button type="button" onclick="setColour(6)">Check Point</button>
+        <button type="button" onclick="saveLevel()">download level</button>
+        <br>
+        <canvas id="editorCanvas" width="1000" height="1000"></canvas>
+        
+    </div>
     
 </body>
 </html>

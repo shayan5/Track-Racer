@@ -38,12 +38,17 @@ const animate = function () {
   updateTimer();
 };
 
-function playGame(){
+function selectGame(){
   $("#mainMenu").hide();
   $("#game").show();
   initializeGame();
 }
 
+function selectLevelEditor(){
+  $("#mainMenu").hide();
+  $("#editor").show();
+  initializeEditor();
+}
 
 function drawTiles(){
   const boundaryTexture = new THREE.TextureLoader().load('level/level.png');
@@ -53,7 +58,7 @@ function drawTiles(){
   let geometry = new THREE.PlaneGeometry(100, 100);
   let material = new THREE.MeshBasicMaterial({map: boundaryTexture});
   let plane = new THREE.Mesh(geometry, material);
-  initializePlayer(-41, 4, camera, scene); //TODO remove hardcoded value
+  initializePlayer(-40.5, 4, camera, scene); //TODO remove hardcoded value
   scene.add(plane);
 }
 
