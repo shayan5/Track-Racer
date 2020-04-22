@@ -62,6 +62,10 @@ function playerEditTile(x, y, newTile){
 
 function generateCanvas(){
     editorCanvas = document.getElementById("editorCanvas");
+    const editor = document.getElementById("editor");
+    editorCanvas.width = editor.clientWidth;
+    editorCanvas.height = editor.clientWidth;
+    tileScale = editor.clientWidth / maxDimensions;
     editorCtx = editorCanvas.getContext("2d");
     for (var i = 0; i < maxDimensions; i++){
         for (var j = 0; j < maxDimensions; j++){
@@ -92,9 +96,10 @@ function generateCanvas(){
     };
 
     window.addEventListener('resize', function(){
-        const canvas = document.getElementById("editorCanvas");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const editor = document.getElementById("editor");
+        editorCanvas.width = editor.clientWidth;
+        editorCanvas.height = editor.clientWidth;
+        tileScale = editor.clientWidth / maxDimensions;
         redrawCanvas();
         //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
     });
@@ -102,8 +107,8 @@ function generateCanvas(){
 }
 
 function redrawCanvas(){
-    tileScale = Math.floor(window.innerWidth / maxDimensions);
-    console.log(tileScale);
+    const editor = document.getElementById("editor");
+    tileScale = editor.clientWidth / maxDimensions;
     for (let i = 0; i < newMap.length; i++){
         for (let j = 0; j < newMap[0].length; j++){
             updateTile(j, i, newMap[i][j]);
