@@ -1,4 +1,4 @@
-const tileScale = 10;
+let tileScale = 10;
 const maxDimensions = 100; //map will be 100 by 100
 const boundaryDimensions = 3; //first 3 and last 3 rows and columns cannot be edited
 let editorCanvas = null;
@@ -91,6 +91,24 @@ function generateCanvas(){
         playerEditTile(lastMouse.x, lastMouse.y, tile)
     };
 
+    window.addEventListener('resize', function(){
+        const canvas = document.getElementById("editorCanvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        redrawCanvas();
+        //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
+    });
+
+}
+
+function redrawCanvas(){
+    tileScale = Math.floor(window.innerWidth / maxDimensions);
+    console.log(tileScale);
+    for (let i = 0; i < newMap.length; i++){
+        for (let j = 0; j < newMap[0].length; j++){
+            updateTile(j, i, newMap[i][j]);
+        }
+    }
 }
 
 function saveLevel(){
