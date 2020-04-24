@@ -116,8 +116,10 @@ function redrawCanvas(){
     }
 }
 
-function saveLevel(){
-    console.log(JSON.stringify({'map' : newMap}));
+function playLevel(){
+    const img = editorCanvas.toDataURL("image/png");
+    editedNewGame(newMap, img);
+    //console.log(JSON.stringify({'map' : newMap}));
 }
 
 function initializeEditor(){

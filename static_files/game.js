@@ -27,7 +27,7 @@ let bestTime = 0;
 let checkpointPassed = true;
 let raceStarted = false;
 
-function initializeGame(){
+function initializeGame(args){
   timerElement = document.getElementById("info");
   scene = new THREE.Scene();
   scene.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI);
@@ -47,7 +47,12 @@ function initializeGame(){
     //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
   });
   loadBackground(scene);
-  loadTrackTextures();
+  if (args.tiles && args.image){
+    setMap(args.tiles);
+    drawTiles(args.image);  
+  } else {
+    loadDefaultTrack();
+  }
   animate();
   addListeners();
 }
@@ -63,13 +68,13 @@ const animate = function () {
   updateTimer();
 };
 
-function drawTiles(){
-  const boundaryTexture = new THREE.TextureLoader().load('level/level.png');
-  boundaryTexture.generateMipmaps = false;
-  boundaryTexture.minFilter = THREE.NearestFilter;
-  boundaryTexture.magFilter = THREE.NearestFilter;
+function drawTiles(mapImage){
+  const mapTexture = new THREE.TextureLoader().load(mapImage);
+  mapTexture.generateMipmaps = false;
+  mapTexture.minFilter = THREE.NearestFilter;
+  mapTexture.magFilter = THREE.NearestFilter;
   let geometry = new THREE.PlaneGeometry(100, 100);
-  let material = new THREE.MeshBasicMaterial({map: boundaryTexture});
+  let material = new THREE.MeshBasicMaterial({map: mapTexture});
   let plane = new THREE.Mesh(geometry, material);
   initializePlayer(-40.5, 4, camera, scene); //TODO remove hardcoded value
   scene.add(plane);
@@ -77,7 +82,7 @@ function drawTiles(){
 
 
 
-function loadTrackTextures(){
+function loadDefaultTrack(){
   const httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType("application/json");
     httpRequest.open("GET", "/level/level.json", true);
@@ -86,7 +91,8 @@ function loadTrackTextures(){
           const result = JSON.parse(httpRequest.response).map;
           if (result != null){
             setMap(result);
-            drawTiles();
+            //const mapTexture = new THREE.TextureLoader().load('level/level.png');
+            drawTiles('level/level.png');
           }
         }
     }
