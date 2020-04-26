@@ -15,16 +15,3 @@ function selectLevelEditor(){
   $("#editor").show();
   initializeEditor();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

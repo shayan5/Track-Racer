@@ -1,13 +1,18 @@
 body { 
-	margin: 0; 
+	margin: 0 !important;
+	padding: 0 !important;
+    background-color: #f1f1f1;
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-size: 14px;
+}
+
+H1 {
+	color: red;
 }
 
 #game {
+	margin: 0%;
 	display: none;
-}
-
-#mainMenu {
-	display: block;
 }
 
 #editor {
@@ -17,11 +22,40 @@ body {
 }
 
 
-div{
+.container {
+	display: flex;
+	justify-content: center;
+}
+
+#mainMenu {
+	padding: 25px;
+	width: 80%;
 	margin: auto;
+	text-align: center;
+	background-color: orange;
+	display: block;
 	border: 1px;
 	border-style: solid;
-	border-color: black;
+	border-color: blue;
+}
+
+#innerMainMenu {
+	margin: auto;
+	width: 80%;
+	text-align: left;
+}
+
+#gameCanvas {
+	position: absolute;
+	margin: 0;
+}
+
+.menu {
+  background-color: white;
+  margin: auto;
+  border: 5px solid black;
+  border-radius: 25px;
+  padding: 10px;
 }
 
 #info {

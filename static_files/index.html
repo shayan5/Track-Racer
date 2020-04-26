@@ -14,17 +14,27 @@
 
 </head>
 <body>
-    <div id="mainMenu">
-        <button onclick="defaultNewGame()">Click here to play!</button>
-        <button onclick="selectLevelEditor()">Click here to make your own level!</button>
+    <div id="mainMenu" class="menu container">
+        <H1>Track Racer</H1>
+        <div id="innerMainMenu" class="menu">Main Menu
+            <br>
+            Welcome to Track Racer!
+            <br>
+            Controls: Use the W, A, S, D keys to move. 
+            <br>
+            Click play to race on a prebuilt track or make your own!   
+            <br>
+            <button onclick="defaultNewGame()">Click here to play!</button>
+            <button onclick="selectLevelEditor()">Click here to make your own level!</button>
+        </div>
     </div>
 
     <div id="game">
         <canvas id="gameCanvas"></canvas>
-        <div id="info">Time: 0.00 Last: 0.00 Best: 0.00</div>
+        <p id="info">Time: 0.00 Last: 0.00 Best: 0.00</p>
     </div>
 
-    <div id="editor">
+    <div id="editor" class="menu">
         <img id="boundary" width="40" height="40" src="level/boundary.png">
         <img id="grass" width="40" height="40" src="level/grass.jpg">
         <img id="track" width="40" height="40" src="level/track.jpg">
