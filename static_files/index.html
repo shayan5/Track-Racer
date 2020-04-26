@@ -14,19 +14,24 @@
 
 </head>
 <body>
-    <div id="mainMenu" class="menu container">
+    <div id="mainMenu" class="menu centerFlex">
         <H1>Track Racer</H1>
-        <div id="innerMainMenu" class="menu">Main Menu
-            <br>
+        <div id="innerMainMenu" class="menu">
             Welcome to Track Racer!
             <br>
             Controls: Use the W, A, S, D keys to move. 
             <br>
-            Click play to race on a prebuilt track or make your own!   
+            Click "Play!" to race on a prebuilt track or "Create Track!" to make your own!   
             <br>
-            <button onclick="defaultNewGame()">Click here to play!</button>
-            <button onclick="selectLevelEditor()">Click here to make your own level!</button>
+            <br>
+            <div id="menuButtons">
+                <button onclick="defaultNewGame()">Play!</button>
+                <button onclick="selectLevelEditor()">Create Track!</button>
+            </div>
+            <br>
         </div>
+        <br>
+        <img src="player/racerMenu.png" class="responsive">
     </div>
 
     <div id="game">
@@ -34,23 +39,23 @@
         <p id="info">Time: 0.00 Last: 0.00 Best: 0.00</p>
     </div>
 
-    <div id="editor" class="menu">
-        <img id="boundary" width="40" height="40" src="level/boundary.png">
-        <img id="grass" width="40" height="40" src="level/grass.jpg">
-        <img id="track" width="40" height="40" src="level/track.jpg">
-        <img id="startline" width="40" height="40" src="level/startline.jpg">
-        <img id="boost" width="40" height="40" src="level/boost.jpg">
-        <img id="checkpoint" width="40" height="40" src="level/checkpoint.jpg">
-        <img id="player" width="40" height="40" src="level/player.jpg">
-        <button type="button" onclick="setColour(1)">Boundary</button>
-        <button type="button" onclick="setColour(2)">Grass</button>
-        <button type="button" onclick="setColour(3)">Track</button>
-        <button type="button" onclick="setColour(5)">Speed Boost</button>
-        <button type="button" onclick="setColour(6)">Check Point</button>
-        <button type="button" onclick="playLevel()">Play Level!</button>
-        <br>
+    <div id="editor">
+        <div id="editorTitle" class="menu">
+            <h1>Level Editor</h1>
+        </div>
         <canvas id="editorCanvas"></canvas>
-        
+        <div id="innerEditorMenu" class="footer">
+            <img id="boundary" onclick="setColour(1)" class="responsiveSmall" src="level/boundary.png">
+            <img id="grass" onclick="setColour(2)" class="responsiveSmall" src="level/grass.jpg">
+            <img id="track" onclick="setColour(3)" class="responsiveSmall" src="level/track.jpg">
+            <img id="startline" class="responsiveSmall" src="level/startline.jpg">
+            <img id="boost" onclick="setColour(5)" class="responsiveSmall" src="level/boost.jpg">
+            <img id="checkpoint" onclick="setColour(6)" class="responsiveSmall" src="level/checkpoint.jpg">
+            <img id="player" class="responsiveSmall" src="level/player.jpg">
+            <p id="tileSelectMessage"></p>
+            <button type="button" onclick="playLevel()"><Strong>Play Level!</Strong></button>
+        </div>
+        <br><br><br><br><br><br><br>
     </div>
     
 </body>

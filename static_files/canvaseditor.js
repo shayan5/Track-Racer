@@ -12,7 +12,17 @@ let tileMap = {
     5: null, //speed boost
     6: null, //check point
     7: null  //player
-}
+};
+const tileMessage = {
+    1: "Boundary Tile: Player cannot cross these tiles.", //boundary
+    2: "Grass Tile: Player moves at a decreased speed on these tiles.", //grass
+    3: "Track Tile: Player moves at a normal speed on these tiles.", //track
+    4: "Start Line: Preset starting line tiles.", //Start Line
+    5: "Speed Boost Tile: Player gains a temporary speed boost upon driving over these tiles.", //speed boost
+    6: "Check Point Tile: Used to calculate lap times, it is recommended to place these halfway between the start and finish line.", //checkpoint
+    7: "Player Starting Position Tile: Player starts here at the beginning of the race." 
+};
+let tileMessageElement = null;
 let tile = 3;
 
 
@@ -36,7 +46,10 @@ function initializeMap(){
 }
 
 function setColour(newTile){
+    tileMap[tile].style.outline = "none"; //remove hightlight from old tile
     tile = newTile;
+    tileMap[tile].style.outline = "2px solid black"; //highlight newly selected tile
+    tileMessageElement.innerHTML = tileMessage[tile];
 }
 
 function updateTile(x, y, newTile){
@@ -63,9 +76,9 @@ function playerEditTile(x, y, newTile){
 function generateCanvas(){
     editorCanvas = document.getElementById("editorCanvas");
     const editor = document.getElementById("editor");
-    editorCanvas.width = editor.clientWidth;
-    editorCanvas.height = editor.clientWidth;
-    tileScale = editor.clientWidth / maxDimensions;
+    editorCanvas.width = editor.offsetWidth;
+    editorCanvas.height = editor.offsetWidth;
+    tileScale = editor.offsetWidth / maxDimensions;
     editorCtx = editorCanvas.getContext("2d");
     for (var i = 0; i < maxDimensions; i++){
         for (var j = 0; j < maxDimensions; j++){
@@ -97,18 +110,17 @@ function generateCanvas(){
 
     window.addEventListener('resize', function(){
         const editor = document.getElementById("editor");
-        editorCanvas.width = editor.clientWidth;
-        editorCanvas.height = editor.clientWidth;
-        tileScale = editor.clientWidth / maxDimensions;
+        editorCanvas.width = editor.offsetWidth;
+        editorCanvas.height = editor.offsetWidth;
+        tileScale = editor.offsetWidth / maxDimensions;
         redrawCanvas();
         //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
     });
-
 }
 
 function redrawCanvas(){
     const editor = document.getElementById("editor");
-    tileScale = editor.clientWidth / maxDimensions;
+    tileScale = editor.offsetWidth / maxDimensions;
     for (let i = 0; i < newMap.length; i++){
         for (let j = 0; j < newMap[0].length; j++){
             updateTile(j, i, newMap[i][j]);
@@ -132,4 +144,7 @@ function initializeEditor(){
     tileMap[7] = document.getElementById("player");
     initializeMap();
     generateCanvas();
+    tileMap[tile].style.outline = "2px solid black"; //highlight default tile
+    tileMessageElement = document.getElementById("tileSelectMessage");
+    tileMessageElement.innerHTML = tileMessage[tile];
 }
