@@ -44,7 +44,6 @@ function initializeGame(args){
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
   });
   loadBackground(scene);
   if (args.tiles && args.image){
@@ -91,7 +90,6 @@ function loadDefaultTrack(){
           const result = JSON.parse(httpRequest.response).map;
           if (result != null){
             setMap(result);
-            //const mapTexture = new THREE.TextureLoader().load('level/level.png');
             drawTiles('level/level.png');
           }
         }
@@ -183,9 +181,7 @@ function canMove(moveDistance){
     let playerPosition = new THREE.Vector3();
     player.getWorldPosition(playerPosition);
     playerPosition.add(new THREE.Vector3(0, 0, moveDistance));
-    //console.log(playerPosition.x + ", " + playerPosition.y);
     let tileType = getTile(playerPosition.x, playerPosition.y);
-    //console.log(tileType);
     if (tileType == 1){
       return false;
     } else if (tileType == 2){

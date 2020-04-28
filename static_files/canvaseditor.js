@@ -114,7 +114,6 @@ function generateCanvas(){
         editorCanvas.height = editor.offsetWidth;
         tileScale = editor.offsetWidth / maxDimensions;
         redrawCanvas();
-        //document.getElementById("editorCanvas").setSize(window.innerWidth, window.innerHeight);
     });
 }
 
@@ -131,7 +130,6 @@ function redrawCanvas(){
 function playLevel(){
     const img = editorCanvas.toDataURL("image/png");
     editedNewGame(newMap, img);
-    //console.log(JSON.stringify({'map' : newMap}));
 }
 
 function initializeEditor(){
