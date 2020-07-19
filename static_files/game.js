@@ -82,19 +82,8 @@ function drawTiles(mapImage){
 
 
 function loadDefaultTrack(){
-  const httpRequest = new XMLHttpRequest();
-    httpRequest.overrideMimeType("application/json");
-    httpRequest.open("GET", "/level/level.json", true);
-    httpRequest.onreadystatechange = function() {
-        if (httpRequest.readyState === 4 && httpRequest.status == "200") {
-          const result = JSON.parse(httpRequest.response).map;
-          if (result != null){
-            setMap(result);
-            drawTiles('level/level.png');
-          }
-        }
-    }
-    httpRequest.send();
+	setMap(defaultLevelMap.map);
+	drawTiles('./level/level.png');
 }
 
 //player
