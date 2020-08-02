@@ -6,3 +6,10 @@ The player controls a racer using the w, a, s, d keys around a race track while 
 The inspiration for this came from the existing Three.js racing project <a href="https://github.com/thatshaman/CharrioKart">CharrioKart</a> which provided a fixed number of race tracks. I wanted to provide players the ability to create their own tracks and be able to instantly play them which lead to development of an integrated level editor.
 
 All icons and sprites were retrieved from https://opengameart.org/.
+
+## Quick Start
+You will need NodeJs and npm
+1. Clone this repo
+2. run npm install
+3. run node index.js
+4. navigate to localhost:3000 in your preferred web browser
